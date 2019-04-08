@@ -1,20 +1,24 @@
 import os
 import base64
 
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, flash
 
 from model import Donation
 
 from flask_nav import Nav
 from flask_nav.elements import Navbar, Subgroup, View, Link, Separator
+from forms import DonorForm
 
 app = Flask(__name__)
 nav = Nav(app)
 
+app.secret_key = '8dabc8efdccf880165a5db5e97cbfcd0'
+
 nav.register_element('my_navbar', Navbar(
     'thenav',
     View('Home Page', 'home'),
-    View('Donate', 'donor')
+    View('Donate', 'donor'),
+    Separator()
 ))
 
 
@@ -29,10 +33,18 @@ def all():
     return render_template('donations.jinja2', donations=donations)
 
 
-@app.route('/donate/')
+@app.route('/donate/', methods=['GET', 'POST'])
 def donor():
-    donations = Donation.select()
-    return render_template('donate.jinja2', donations=donations)
+    form = DonorForm()
+
+    if request.method == "POST":
+        if form.validate() is False:
+            flash('Error in input!')
+            return render_template('donate.jinja2', form=form)
+        else:
+            all()
+    elif request.method == "GET":
+        return render_template('donate.jinja2', form=form)
 
 
 if __name__ == "__main__":
