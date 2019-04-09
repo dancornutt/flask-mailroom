@@ -17,7 +17,7 @@ app.secret_key = '8dabc8efdccf880165a5db5e97cbfcd0'
 nav.register_element('my_navbar', Navbar(
     'thenav',
     View('Home Page', 'home'),
-    View('Donate', 'donor'),
+    View('Donate', 'donate'),
     Separator()
 ))
 
@@ -34,17 +34,18 @@ def all():
 
 
 @app.route('/donate/', methods=['GET', 'POST'])
-def donor():
-    form = DonorForm()
-
-    if request.method == "POST":
-        if form.validate() is False:
-            flash('Error in input!')
-            return render_template('donate.jinja2', form=form)
-        else:
-            all()
-    elif request.method == "GET":
-        return render_template('donate.jinja2', form=form)
+def donate():
+    # form = DonorForm()
+    #
+    # if request.method == "POST":
+    #     if form.validate() is False:
+    #         flash('Error in input!')
+    #         return render_template('donate.jinja2', form=form)
+    #     else:
+    #         all()
+    # elif request.method == "GET":
+    #     return render_template('donate.jinja2', form=form)
+    return render_template('donate.jinja2')
 
 
 if __name__ == "__main__":
