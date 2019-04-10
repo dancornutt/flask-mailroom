@@ -12,7 +12,8 @@ from forms import DonorForm
 app = Flask(__name__)
 nav = Nav(app)
 
-app.secret_key = '8dabc8efdccf880165a5db5e97cbfcd0'
+app.secret_key = b'\x92+\x9b\x0fK{\xc1m\xe5\xe0\xaee\xbe\xcfA\xb0\xe9j|\xce\x8c\xa2\xc0\xf4'
+
 
 nav.register_element('my_navbar', Navbar(
     'thenav',
@@ -35,17 +36,19 @@ def all():
 
 @app.route('/donate/', methods=['GET', 'POST'])
 def donate():
-    # form = DonorForm()
-    #
-    # if request.method == "POST":
-    #     if form.validate() is False:
-    #         flash('Error in input!')
-    #         return render_template('donate.jinja2', form=form)
-    #     else:
-    #         all()
-    # elif request.method == "GET":
-    #     return render_template('donate.jinja2', form=form)
-    return render_template('donate.jinja2')
+
+    if request.method == "POST":
+        donation = float(request.form['amount'])
+        person = request.form['donor']
+        session['donation'] = donation
+        session['person'] = person
+        print("it was {} who donated {}".format(person, donation))
+    return render_template('donate.jinja2', session=session)
+
+
+@app.route('/save/', methods=['POST'])
+def save():
+    print("I should save.")
 
 
 if __name__ == "__main__":

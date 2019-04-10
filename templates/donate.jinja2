@@ -3,7 +3,7 @@
 {% block subtitle %}Donate Page{% endblock subtitle %}
 
 {% block content %}
-    <form method="POST">
+    <form method="POST" action="{{ url_for('save') }}">
         <label for="donor">Donor: </label><input type="donor" id="donor" name="donor">
         <label for="amount">Amount: </label><input type="amount" id="amount" name="amount">
         <input type="submit" value="Donate"
