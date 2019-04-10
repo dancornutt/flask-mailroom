@@ -1,13 +1,12 @@
 import os
 import base64
 
-from flask import Flask, render_template, request, redirect, url_for, session, flash
+from flask import Flask, render_template, request, redirect, url_for
 
-from model import Donation
+from model import Donor, Donation
 
 from flask_nav import Nav
-from flask_nav.elements import Navbar, Subgroup, View, Link, Separator
-from forms import DonorForm
+from flask_nav.elements import Navbar, View, Separator
 
 app = Flask(__name__)
 nav = Nav(app)
@@ -36,19 +35,14 @@ def all():
 
 @app.route('/donate/', methods=['GET', 'POST'])
 def donate():
-
     if request.method == "POST":
-        donation = float(request.form['amount'])
-        person = request.form['donor']
-        session['donation'] = donation
-        session['person'] = person
-        print("it was {} who donated {}".format(person, donation))
-    return render_template('donate.jinja2', session=session)
-
-
-@app.route('/save/', methods=['POST'])
-def save():
-    print("I should save.")
+        amount = float(request.form['amount'])
+        donor = Donor(name=request.form['donor'].title())
+        donor.save()
+        Donation(value=amount, donor=donor).save()
+        return redirect(url_for('all'))
+    else:
+        return render_template('donate.jinja2')
 
 
 if __name__ == "__main__":
